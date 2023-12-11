@@ -1,0 +1,22 @@
+"D:\analyse bourse\venv\Scripts\python.exe" "D:/analyse bourse/main.py"
+{'BNA': ['18,7',
+         '12,2',
+         '-0,52',
+         'BNA en décroissance sur les 3 dernieres années.'],
+ 'BVPS': 'Prix : 24.77 SOUS-COTE à sa valeur intrasèque : 127. Prix Achat Max '
+         '= 88.90 €',
+ 'Capitalisation': 'Grosse Entreprise 11 409 Millions €',
+ 'Chiffre Affaire': ['58 770',
+                     '57 419',
+                     '55 537',
+                     "Chiffre d'affaire en décroissance sur les 3 dernieres "
+                     'années.'],
+ 'Dette': [-0.62, -0.89, -0.53, 'Aucune Dette'],
+ 'Dividende': {'2017': '3.55€',
+               '2018': '3.55€',
+               '2019': '0€',
+               'analyse': 'Dividende en décroissances.'},
+ 'PER': 'PER : -81.1 négatif',
+ 'Taux distribution': ['18.98%', '29.10%', '-0.00%']}
+
+Process finished with exit code 0

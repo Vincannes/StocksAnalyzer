@@ -1,0 +1,27 @@
+Valeur Intraseque :
+- BVPS = valeur intraseque de l'action
+  Regarde si le bvps est au dessus ou en dessous du prix de l'action.
+  Acheter avec un BVPS à 0.7*BVPS. Si l'action est a ce prix, acheter.
+
+- PER = si action s'echange a un bon prix en fonction de ses benefice
+  12< PER <17 : normal
+  PER > 22 : sur cote
+  PER < 10 : sous coté : regarder le BVPS si sous cote !!!!!!!!!!!!!!!!!!
+
+- Quand le PER et BVPS sont sous-cote, regarder si les indicateurs de santé sont solide :
+	- Dette controlé : Leverage < 2 et parfait Leverage < 1.5 et trop si < 4
+	  Leverage = EBITDA/Dettes
+	  Si pas de dette regarder sa trésorie
+	- Capitalisation Boursiere > 10Million€ et parfait si 1000Mil€
+	- CA croissant ou constant sur les 5 à 10 dernieres années
+	- BNA et dividende croissant dans le temps (Si BNA baisse mais Dividende croix, pas bon 
+	  car pas en en bonne santé mais donnent plus aux actionnaires)
+	- Taux de Distribution < 65-70% (part reversé aux actionnaires) si trop éleve sur plusieurs années, 
+ 	  elle n'economise pas.
+		(Dividende / BNA) *100
+	
+
+Calcul Rentabilité action :
+  Verifier que l'entreprise fasse des benefice malgres sa sous-cotation.
+  - Calculer rentabilité de l'entreprise : Cours de l'action / Cashflow = < 7
+  - Puis calculer ma rentabilité au moment de l'achat : Dividende / Cours au Moment de l'Achat

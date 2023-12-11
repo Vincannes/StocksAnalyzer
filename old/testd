@@ -1,0 +1,7 @@
+"tiff": ["datatype", "compression"],
+"mov": ["ffmpeg_args", "preset", "labeling", "fps", "mov64_audio_offset", "mov64_audiofile", "mov64_codec"],
+"jpeg": ["_jpeg_quality", "_jpeg_sub_sampling"],
+"dpx": ["datatype", "transfer"],
+ "exr": ["datatype", "compression", "interleave", "metadata"],
+ "targa": ["compression"],
+ "png": ["datatype"]}
