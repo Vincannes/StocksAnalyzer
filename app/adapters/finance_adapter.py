@@ -9,10 +9,14 @@ class FinanceAdapters(object):
     def __init__(self, stock):
         self._stock_name = stock
         self._stock = yf.Ticker(stock)
+        self._info = self._stock.info
+
+    @property
+    def info(self):
+        return self._info
 
     def get_price(self):
-        a = self._stock.info
-        return a#.get("currentPrice")
+        return self._info.get("currentPrice")
 
     def get_actions(self):
         return self._stock.actions
@@ -45,8 +49,11 @@ class FinanceAdapters(object):
     def get_cash_flow(self):
         return self._stock.cashflow
 
+    def get_financials(self):
+        return self._stock.get_financials()
+
 
 if __name__ == '__main__':
     stck = FinanceAdapters("MSFT")
-    print(type(stck.get_price()))
+    print(stck.get_price())
 
