@@ -25,3 +25,70 @@ Calcul Rentabilité action :
   Verifier que l'entreprise fasse des benefice malgres sa sous-cotation.
   - Calculer rentabilité de l'entreprise : Cours de l'action / Cashflow = < 7
   - Puis calculer ma rentabilité au moment de l'achat : Dividende / Cours au Moment de l'Achat
+
+####################
+
+- BVPS : prix réel de l'entreprise marge, de sécurité 0.7 * BVPS
+    (Actif-Passif) / Nbr Parts
+- PER : action s'échange a un bon prix ou pas
+    cours / BNPA
+
+Si cours à 30€, BVPS à 50€ et PER à 5 alors l'entreprise est sous-coté
+Si cours à 50€, BVPS à 30€ et PER à 35 alors l'etreprise est sur-coté
+
+Santé, si entreprise sous-coté il faut qu'elle est des indicateurs de santé solides
+- Capitalisation > 10M et meilleur > 1 Milliard
+- CA croissant les 5 dernières années
+- Dette controlée : Leverage < 2 et parfait si < 1.5
+    EBIITDA / Dettes
+
+    Si pas de Dette => regarder la trésorie
+
+- BNA ou BNPA croissant
+- Dividende croissant
+- Taux distribution < 65/70%
+    (Dividende / BNPA) * 100
+
+Rentabilité action, verifier si l'entreprise est bien sous-coté par rapport à sa rentabilité propre
+- rentabilité < 7
+    Cours / cashflow
+
+####################
+
+site : https://www.idbourse.com/2023/05/analyse-fondamentale-dune-action-guide-pratique-pour-investir-en-bourse/
+
+Buffet :
+
+1. (3) Investissement dans des entreprises solides : Warren Buffett cherche des entreprises avec des modèles commerciaux solides,
+    des avantages concurrentiels durables et une gestion compétente. Il préfère investir dans des sociétés qu'il comprend bien.
+2. (2) Cercle de compétence : Buffett conseille aux investisseurs de rester dans leur cercle de compétence.
+    Cela signifie qu'il vaut mieux investir dans des entreprises que vous comprenez vraiment plutôt que de
+    'aventurer dans des secteurs inconnus.
+3. (3) Investissement à long terme : Buffett est un investisseur à long terme. Il préfère détenir des actions pendant de
+    nombreuses années, voire des décennies, plutôt que de spéculer à court terme.
+    Il croit au pouvoir de la croissance à long terme des entreprises.
+4. (3) Marge de sécurité : Buffett cherche à acheter des actions sous-évaluées, c'est-à-dire des actions qui se négocient
+    à un prix inférieur à leur valeur intrinsèque. Il estime qu'une marge de sécurité protège les investisseurs contre
+    les fluctuations du marché.
+5. (3) Qualité de la gestion : Buffett attache une grande importance à la qualité de la direction d'une entreprise.
+    Il recherche des équipes de direction compétentes et éthiques, capables de gérer efficacement l'entreprise sur le long terme.
+6. (2) Flux de trésorerie : Buffett accorde une grande importance aux flux de trésorerie. Il aime les entreprises qui génèrent
+    un flux de trésorerie stable et croissant. Pour lui, la capacité d'une entreprise à générer des bénéfices en espèces est cruciale.
+7. (2) Éviter la foule et l'émotion : Buffett conseille de ne pas suivre aveuglément la foule. Il est souvent contre-cyclique,
+    achetant des actions lorsque les marchés sont pessimistes et vendant lorsque l'enthousiasme est excessif.
+    Il souligne également l'importance de contrôler ses émotions lors de la prise de décisions d'investissement.
+8. (2) Diversification limitée : Contrairement à la croyance populaire en faveur de la diversification,
+    Buffett préfère avoir un nombre limité d'investissements, mais dans des sociétés qu'il comprend bien et qu'il estime
+    être de véritables investissements à long terme.
+9. (2) Rendement sur investissement : Buffett regarde le rendement sur investissement des entreprises.
+    Il évalue la rentabilité d'une entreprise en examinant le rendement sur les capitaux propres
+    et d'autres mesures de la performance financière.
+10. (1) Communication claire : Buffett est connu pour sa communication claire et honnête. Il publie chaque année une
+    lettre aux actionnaires de Berkshire Hathaway, où il partage ses réflexions sur les performances de l'entreprise et
+    donne des conseils d'investissement.
+
+La stratégie d'investissement de Warren Buffett est souvent résumée par sa célèbre citation : "Achetez des actions d'entreprises formidables avec une compréhension de leurs opérations, et ne les vendez jamais."
+
+
+
+

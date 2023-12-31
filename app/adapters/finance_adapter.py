@@ -3,6 +3,8 @@
 # copyright	:Vincannes
 import yfinance as yf
 
+from app.core.utils import DataToDict
+
 
 class FinanceAdapters(object):
 
@@ -15,11 +17,18 @@ class FinanceAdapters(object):
     def info(self):
         return self._info
 
+    @property
+    def financials(self):
+        return DataToDict(self._stock.get_financials())
+
     def get_price(self):
         return self._info.get("currentPrice")
 
     def get_actions(self):
         return self._stock.actions
+
+    def get_earnings(self):
+        return self._stock.earnings
 
     def get_dividends(self):
         return self._stock.dividends
@@ -49,11 +58,8 @@ class FinanceAdapters(object):
     def get_cash_flow(self):
         return self._stock.cashflow
 
-    def get_financials(self):
-        return self._stock.get_financials()
-
 
 if __name__ == '__main__':
     stck = FinanceAdapters("MSFT")
-    print(stck.get_price())
-
+    print(stck.financials)
+    print(stck.financials.get("TotalRevenue"))
