@@ -13,16 +13,19 @@ class Analyzer(object):
     fetcher = DataFetcher
 
     WEIGHT = {
-        'bna': 2,
-        'per': 3,
-        'bvps': 2,
-        'capit': 2,
-        'ebitda': 2,
-        'revenues': 1,
-        'leverage': 1,
-        'dividends': 1,
-        'payout_ratio': 1,
-        'profitability': 1,
+        'bna': 1,           # BNA (Bénéfice Net par Action)
+        'per': 3,           # PER (Price to Earnings Ratio)
+        'roa': 2,           # ROA (Return on Assets)
+        'roe': 2,           # ROE (Return on Equity)
+        'bvps': 2,          # BVPS (Book Value per Share)
+        'capit': 2,         # Capitalisation
+        'ebitda': 1,        # EBITDA (Earnings Before Interest, Taxes, Depreciation, and Amortization)
+        'cashflow': 1,      # Cash Flow
+        'revenues': 2,      # Revenues (Chiffre d'affaires)
+        'leverage': 1,      # Leverage (Dette)
+        'dividends': 2,     # Dividends
+        'payout_ratio': 2,  # Payout Ratio (Taux de Distribution)
+        'profitability': 2, # Rentabilité
     }
 
     def __init__(self, stock):
@@ -40,6 +43,10 @@ class Analyzer(object):
     @property
     def bvps(self):
         return self._bvps()
+
+    @property
+    def cashflow(self):
+        return self._cash_flow()
 
     @property
     def per(self):
@@ -77,32 +84,54 @@ class Analyzer(object):
     def payout_ratio(self):
         return self._payout_ratio()
 
+    @property
+    def roa(self):
+        return self._roa()
+
+    @property
+    def roe(self):
+        return self._roe()
+
     # Analyze
 
     def bna_analyze(self):
+        """TODO
+        :return:
+        """
         bna = self.bna
         value = "BNA "
-        if bna == 0:
-            value += "en décroissance."
-        elif bna == 1:
-            value += "crois depuis l'année précédente."
-        elif bna == 2:
-            value += "en constante croissance."
+        # if bna == 0:
+        #     value += "en décroissance."
+        # elif bna == 1:
+        #     value += "crois depuis l'année précédente."
+        # elif bna == 2:
+        #     value += "en constante croissance: "
+        value += "{}".format(self._fetcher.get_bpa())
         return value
 
     def bvps_analyze(self):
         bvps = self.bvps
-        value = "BVPS, prix réel de {}".format(self._fetcher.get_book_value_share())
+        value = "BVPS, prix réel de {}€".format(self._fetcher.get_book_value_share())
         if bvps == 0:
             value += " sur-évaluee "
         elif bvps == 1:
             value += " sous-évaluee "
-        value += "par rapport au cour de l action {}.".format(self._fetcher.get_price())
+        value += "par rapport à sa valeur réel."
+        return value
+
+    def cashflow_analyze(self):
+        cash = self._cash_flow
+        value = "Tresorie: "
+        if cash == 0:
+            value += "négatif: "
+        elif cash == 1:
+            value += "positif: "
+        value += "{:,.0f}M €".format(int(self._fetcher.get_cash_flow())/10**6)
         return value
 
     def ebitda_analyze(self):
         ebida = self.ebitda
-        value = "Le Bénéfice Avant Intérêts, Impôts, Dépréciation et Amortissement "
+        value = "EBITDA: Le Bénéfice Avant Intérêts, Impôts, Dépréciation et Amortissement "
         if ebida == 0:
             value += " est en baisse."
         elif ebida == 1:
@@ -113,12 +142,11 @@ class Analyzer(object):
 
     def ebitda_marge_analyze(self):
         ebitda = self._ebitda_marge()
-        print(ebitda)
         value = "EBITDA marge par rapport au Chiffre d'affaire"
         if ebitda == 0:
-            value += " n'est pas bon"
+            value += " n'est pas bon."
         elif ebitda == 1:
-            value += " est bonne"
+            value += " est bonne."
         return value
 
     def per_analyze(self):
@@ -142,18 +170,19 @@ class Analyzer(object):
         elif capt == 2:
             value += "entre 100 millions et 1 milliard."
         elif capt == 3:
-            value += "superieur au milliard."
+            value += "superieur à 1 milliard."
         return value
 
     def leverage_analyze(self):
         lev = self.leverage
         value = "Dette"
         if lev == 0:
-            value += " sur-endette."
+            value += " sur-endette: "
         if lev == 1:
-            value += " pas trop eleve."
+            value += " pas trop eleve: "
         if lev == 2:
-            value += " parfaite."
+            value += " parfaite: "
+        value += "{}%".format(self._fetcher.get_leverage())
         return value
 
     def profitability_analyze(self):
@@ -169,22 +198,24 @@ class Analyzer(object):
         revenue = self.revenues
         value = "Chiffre d'affaire"
         if revenue == 0:
-            value += " en baisse."
+            value += " en baisse: "
         if revenue == 1:
-            value += " crois depuis l'année précédente."
+            value += " crois depuis l'année précédente: "
         if revenue == 2:
-            value += " en constante croissance."
+            value += " en constante croissance: "
+        value += " ".join(["{}M €".format(int(i)/10**6) for i in self._fetcher.get_revenue_history()])
         return value
 
     def dividends_analyze(self):
         dividends = self.dividends
         value = "Les dividendes"
         if dividends == 0:
-            value += " sont en baisse."
+            value += " sont en baisse: "
         elif dividends == 1:
-            value += " crois depuis l'année précédente."
+            value += " crois depuis l'année précédente: "
         elif dividends == 2:
-            value += " en constante croissance."
+            value += " en constante croissance: "
+        value += " ".join(["{}€".format(round(i, 2)) for i in self._fetcher.get_dividend_history()])
         return value
 
     def payout_ratio_analyze(self):
@@ -196,10 +227,33 @@ class Analyzer(object):
             value += " correct."
         return value
 
-    def calculat_level(self):
+    def roa_analyze(self):
+        roa = self.roa
+        value = "ROA de"
+        if roa == 0:
+            value += " mauvaise rentabilité: "
+        if roa == 1:
+            value += " bonne rentabilité: "
+
+        value += "{}%".format(round(self._fetcher.get_roa(), 2))
+        return value
+
+    def roe_analyze(self):
+        roe = self.roe
+        value = "ROE: "
+        if roe == 0:
+            value += " résultat médiocre: "
+        if roe == 1:
+            value += " résultat acceptable: "
+
+        value += "{}%".format(round(self._fetcher.get_roe(), 2))
+        return value
+
+    def calculate_level(self):
         bna = self.bna * self.WEIGHT.get("bna")
         per = self.per * self.WEIGHT.get("per")
         bvps = self.bvps * self.WEIGHT.get("bvps")
+        cash = self.cashflow * self.WEIGHT.get("cashflow")
         capit = self.capitalisation * self.WEIGHT.get("capit")
         revenues = self.revenues * self.WEIGHT.get("revenues")
         dividends = self.dividends * self.WEIGHT.get("dividends")
@@ -209,7 +263,11 @@ class Analyzer(object):
         leverage = self.leverage * self.WEIGHT.get("leverage")
         ebitda = self.ebitda * self.WEIGHT.get("ebitda")
 
+        roa = self.roa * self.WEIGHT.get("roa")
+        roe = self.roe * self.WEIGHT.get("roe")
+
         score = bna + per + bvps + capit + revenues + dividends + payout_ratio + profitability + leverage + ebitda
+        score += roa + roe + cash
         return score
 
     def show(self):
@@ -219,12 +277,15 @@ class Analyzer(object):
             self.per_analyze(),
             self.capitalisation_analyze(),
             self.revenues_analyze(),
+            self.cashflow_analyze(),
             self.dividends_analyze(),
             self.leverage_analyze(),
             self.payout_ratio_analyze(),
             self.ebitda_analyze(),
             self.ebitda_marge_analyze(),
             self.profitability_analyze(),
+            self.roa_analyze(),
+            self.roe_analyze(),
         ]
         return msg
 
@@ -251,6 +312,13 @@ class Analyzer(object):
             value = 1
         if capit < 1000000000:
             value = 2
+        return value
+
+    def _cash_flow(self):
+        value = 0
+        cash = self._fetcher.get_cash_flow()
+        if cash > 0:
+            value = 1
         return value
 
     def _ebitda_marge(self):
@@ -314,12 +382,12 @@ class Analyzer(object):
         return value
 
     def _bna_history(self):
-        bna = self._fetcher.get_dividend_history()
+        bna = self._fetcher.get_bpa()
         value = 0
-        if bna.iloc[-1] > bna.iloc[-2]:
-            value = 1
-        if all(bna.iloc[i] > bna.iloc[i - 1] for i in range(1, len(bna))):
-            value = 2
+        # if bna.iloc[-1] > bna.iloc[-2]:
+        #     value = 1
+        # if all(bna.iloc[i] > bna.iloc[i - 1] for i in range(1, len(bna))):
+        #     value = 2
         return value
 
     def _payout_ratio(self):
@@ -328,6 +396,21 @@ class Analyzer(object):
         if payout < 70:
             value = 1
         return value
+
+    def _roa(self):
+        roa = self._fetcher.get_roa()
+        value = 0
+        if roa >= 10:
+            value = 1
+        return value
+
+    def _roe(self):
+        roe = self._fetcher.get_roe()
+        value = 0
+        if roe >= 10:
+            value = 1
+        return value
+
 
 
 if __name__ == "__main__":
@@ -353,6 +436,6 @@ if __name__ == "__main__":
         analyze = Analyzer(stck)
         print(analyze.info.name)
         pprint(analyze.show())
-        print(analyze.calculat_level())
+        print(analyze.calculate_level())
         print("")
-        # break
+        break

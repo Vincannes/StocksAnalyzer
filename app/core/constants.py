@@ -2,6 +2,7 @@
 # #support	:Trolard Vincent
 # copyright	:Vincannes
 
+ASSETS = "Total Assets"
 BPA = "trailingEps"
 BPA_HST = "DilutedEPS"
 BOOK_VALUE = "bookValue"
@@ -16,6 +17,10 @@ DIVIDENDE_HST = "dividendRate"
 EBITDA = "ebitda"
 EBITDA_HST = "EBITDA"
 INDUSTRY = "industryKey"
+NET_INCOME = "netIncomeToCommon"
+NET_INCOME_HST = "NetIncome"
+ROA = "returnOnAssets"
+ROE = "returnOnEquity"
 REVENUE = "totalRevenue"
 REVENUE_HST = "TotalRevenue"
 REVENUE_SHARE = "revenuePerShare"

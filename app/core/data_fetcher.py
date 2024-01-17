@@ -34,6 +34,9 @@ class DataFetcher(object):
         """
         return self._financer.get_price()
 
+    def get_assets_total(self):
+        return self._financer.balance_sheet.get(cst.ASSETS)[0]
+
     def get_bpa(self):
         """Ratio Benefice par Action (EPS)
         :return:
@@ -101,6 +104,9 @@ class DataFetcher(object):
     def get_ebitda_history(self):
         return self._financer.financials.get(cst.EBITDA_HST)
 
+    def get_equity(self):
+        return 1
+
     def get_leverage(self):
         """ Si pas de Dette => regarder la trésorie
             EBITDA / DEBT
@@ -123,6 +129,12 @@ class DataFetcher(object):
         cashflow_action = abs(self.get_cash_flow() / self.get_shares())
         return round(self.get_price() / cashflow_action, 2)
 
+    def get_net_income(self):
+        """ Resulat net
+        :return:
+        """
+        return self._financer.info.get(cst.NET_INCOME)
+
     def get_revenue(self):
         """ Chiffre affaire
         :return:
@@ -136,10 +148,18 @@ class DataFetcher(object):
         return self._financer.info.get(cst.REVENUE_SHARE)
 
     def get_roa(self):
-        return
+        """ Return On Asset
+        Rapport resultat net / total actif
+        :return: %
+        """
+        return  self._financer.info.get(cst.ROA) * 100
 
     def get_roe(self):
-        return
+        """ Return On Equity
+        Rapport resultat net / capitaux propre
+        :return: %
+        """
+        return self._financer.info.get(cst.ROE) * 100
 
     def get_shares(self):
         """Number of shares
@@ -152,12 +172,15 @@ class DataFetcher(object):
 
 if __name__ == '__main__':
     stck = DataFetcher("MSFT")
-    # print(stck._financer.info.keys())
+    pprint(stck._financer.info)
+    # pprint(stck._financer.financials)
     # print(stck._financer.get_dividends())
-    # print(stck._financer.financials.keys())
+    # print([i for i, a in stck._financer.balance_sheet.items()])
     # print(stck._financer.info.get("totalCashPerShare"))
+    # print(stck._financer.info.get("netIncomeToCommon"))
     # print(stck._financer.info.get("totalDebt"))
     # print(stck._financer.info.get("currentRatio"))
+    # print(stck._financer.info.get("returnOnEquity"))
     # print(stck._financer.info.get("revenuePerShare"))
     # print("")
     # print("bpa", stck.get_bpa())
@@ -167,7 +190,7 @@ if __name__ == '__main__':
     # pprint(stck.get_ebitda_history())
     # print("revenue", stck.get_revenue())
     # print("revenue share", stck.get_revenue_per_share())
-    print("cash flow", stck.get_cash_flow())
+    # print("cash flow", stck.get_cash_flow())
     # print("dividende", stck.get_dividend())
     # print("debt", stck.get_debt())
     # print("leverage", stck.get_leverage())
@@ -178,6 +201,11 @@ if __name__ == '__main__':
     # print("payout", stck.get_payout_ratio())
     # print("")
     # print("revenue history", stck.get_revenue_history())
+    print("")
+    print("rn", stck.get_net_income())
+    print("assets", stck.get_assets_total())
+    print("ROA", stck.get_roa())
+    print("ROE", stck.get_roe())
     print("")
     pprint(stck.name)
     # print("dividend history", stck.get_dividend_history())

@@ -18,6 +18,10 @@ class FinanceAdapters(object):
         return self._info
 
     @property
+    def balance_sheet(self):
+        return DataToDict(self._stock.balance_sheet)
+
+    @property
     def financials(self):
         return DataToDict(self._stock.get_financials())
 
@@ -61,5 +65,6 @@ class FinanceAdapters(object):
 
 if __name__ == '__main__':
     stck = FinanceAdapters("MSFT")
+    print(stck.info)
     print(stck.financials)
-    print(stck.financials.get("TotalRevenue"))
+    # print(stck.financials.get("TotalRevenue"))
