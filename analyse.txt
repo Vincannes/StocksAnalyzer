@@ -39,7 +39,7 @@ Si cours à 50€, BVPS à 30€ et PER à 35 alors l'etreprise est sur-coté
 Santé, si entreprise sous-coté il faut qu'elle est des indicateurs de santé solides
 - Capitalisation > 10M et meilleur > 1 Milliard
 - CA croissant les 5 dernières années
-- Dette controlée : Leverage < 2 et parfait si < 1.5
+- Dette controlée : Leverage < 3 et parfait si < 1.5
     EBIITDA / Dettes
 
     Si pas de Dette => regarder la trésorie
@@ -52,6 +52,57 @@ Santé, si entreprise sous-coté il faut qu'elle est des indicateurs de santé s
 Rentabilité action, verifier si l'entreprise est bien sous-coté par rapport à sa rentabilité propre
 - rentabilité < 7
     Cours / cashflow
+
+####################
+
+- Free Cash Flow
+- Marge Nette > 15% : pourcentage revenu qui constitue le bénéfice après toutes les dépenses
+- retour sur captiaux > 15%: retour sur investissement des actifs
+- dette / ebitda: combien d année l'entreprise est capable de remboursé sa dette à par rapport à son propre EBITDA
+
+######### Francis Ca Mousse ###########
+            TODO
+- DONE Resulat net sur les 3 et 5 dernière années
+    - 0 strictement décroissant
+    - 1 globalement décroissant (1 année plus haussière)
+    - 2 sans tendance           (augmente sur 5 dernière et 3 dernière baisse ou inverse)
+    - 3 globalement croissant   (1 année plus baissière)
+    - 4 strictement croissant
+- DONE Cours de bourse en augmentation : 0% an < cours < 5% an
+    - 0 décroissant < 5%
+    - 1 décroissant > -5% et < 0%
+    - 2 sans tendance
+    - 3 croissant > 0% et < 5%
+    - 4 croissant > 5%
+
+    Vérifier prix il y a 5 ans et aujourd'hui : voir %
+    Verifier prix il y a 3 ans et aujourd'hui : voir %
+- DONE 10 < 17 < PER < 25 < 35
+- DONE versement de dividende en augmentation sur les 3 et 5 dernière années
+- DONE rendement de dividende (dividende / cours de bourse)
+    - 1 = 0%
+    - 2 < 1%
+    - 3 < 2%
+    - 4 < 3%
+    - 5 > 3%
+- DONE Payout Ratio: ratio de distribution < 70% sur 5 dernière années
+    Dividende par action / Benefice net par action ou Dividende globan / Rsulat net
+
+######## PIK Bourse ############
+
+Valeur Intrasèque:
+    - Discounted Cash Flow: Valeur Capitaux Propre / Actions en circulation
+    - Graham:
+        EPS (BNA): Benefice par action
+        PER
+        G: croissance par année
+        2G:
+        A: rendement moyen des obligatios de sociétés AAA sur 20 ans
+        Y: rendement actuel des obligatios de sociétés AAA
+        (EPS*(PER+(G+2G))*A)/Y
+    - Multiples Valuation (meme secteur):
+
+
 
 ####################
 

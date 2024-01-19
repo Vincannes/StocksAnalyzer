@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # #support	:Trolard Vincent
 # copyright	:Vincannes
-import pandas as pd
+import datetime
 import yfinance as yf
 
 from app.core import constants as cst
@@ -36,6 +36,7 @@ class FinanceAdapters(object):
             self._data[key] = val
         self._data[cst.ASSETS] = self._balance_sheet().get(cst.ASSETS)[0]
         self._histories = DataToDict(self._stock.get_financials())
+        self._histories.append(self._get_price_hst())
 
     def _balance_sheet(self):
         return DataToDict(self._stock.balance_sheet)
@@ -57,6 +58,13 @@ class FinanceAdapters(object):
 
     def _get_capital(self):
         return self._stock.capital_gains
+
+    def _get_price_hst(self):
+        end_date = datetime.datetime.now()
+        start_date = end_date - datetime.timedelta(days=365 * 5)
+
+        price = yf.download(self._stock_name, interval="3mo", start=start_date, end=end_date)[cst.CLOSE_HST]
+        return price.resample('Y').mean()
 
     def _get_resultat_compte(self):
         """
@@ -83,6 +91,7 @@ if __name__ == '__main__':
     stck = FinanceAdapters("MSFT")
     # pprint(stck.data)
     pprint(stck.histories)
+    # print(stck._get_price_hst())
     # pprint(stck._get_dividends())
     # print(stck.financials)
     # print(stck.financials.get("TotalRevenue"))

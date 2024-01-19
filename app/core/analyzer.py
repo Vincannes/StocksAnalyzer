@@ -3,6 +3,7 @@
 # copyright	:Vincannes
 from pprint import pprint
 
+import numpy as np
 import pandas as pd
 
 from app.core import constants as cst
@@ -26,6 +27,7 @@ class Analyzer(object):
         'dividends': 2,     # Dividends
         'payout_ratio': 2,  # Payout Ratio (Taux de Distribution)
         'profitability': 2, # Rentabilité
+        'resultat_net': 3,  # Résultat Net
     }
 
     def __init__(self, stock):
@@ -81,6 +83,14 @@ class Analyzer(object):
         return self._dividends_history()
 
     @property
+    def dividends_efficiancy(self):
+        return self._dividend_efficiency()
+
+    @property
+    def price(self):
+        return self._price_evolution()
+
+    @property
     def payout_ratio(self):
         return self._payout_ratio()
 
@@ -91,6 +101,10 @@ class Analyzer(object):
     @property
     def roe(self):
         return self._roe()
+
+    @property
+    def resulat_net(self):
+        return self._net_income_history()
 
     # Analyze
 
@@ -164,13 +178,14 @@ class Analyzer(object):
         capt = self.capitalisation
         value = "La capitalisation boursière est "
         if capt == 0:
-            value += "est inférieur à 10 millions."
+            value += "est inférieur à 10 millions"
         elif capt == 1:
-            value += "est inférieur à 100 millions."
+            value += "est inférieur à 100 millions"
         elif capt == 2:
-            value += "entre 100 millions et 1 milliard."
+            value += "entre 100 millions et 1 milliard"
         elif capt == 3:
-            value += "superieur à 1 milliard."
+            value += "superieur à 1 milliard"
+        value += ": {:,.0f}M €".format(int(self._fetcher.get_capitalisation())/10**6)
         return value
 
     def leverage_analyze(self):
@@ -192,6 +207,22 @@ class Analyzer(object):
             value += " pas rentable"
         if prof == 1:
             value += " rentable"
+        return value
+
+    def resultat_net_analyze(self):
+        net_income = self.resulat_net
+        value = "Resulat net {}".format(self._fetcher.get_profitability())
+        if net_income == 0:
+            value += " strictement décroissant: "
+        if net_income == 1:
+            value += " globalement décroissant: "
+        if net_income == 2:
+            value += " neutre: "
+        if net_income == 3:
+            value += " globalement croissant: "
+        if net_income == 4:
+            value += " strictement croissant: "
+        value += " ".join(["{}M€ ".format(int(i)/10**6) for i in self._fetcher.get_net_income_history()])
         return value
 
     def revenues_analyze(self):
@@ -218,6 +249,23 @@ class Analyzer(object):
         value += " ".join(["{}€".format(round(i, 2)) for i in self._fetcher.get_dividend_history()])
         return value
 
+    def dividends_efficiancy_analyze(self):
+        price = self.dividends_efficiancy
+        value = "Rendement par dividende "
+        if price == 0:
+            value += "faible "
+        if price == 1:
+            value += "assez faible"
+        if price == 2:
+            value += "neutre "
+        if price == 3:
+            value += "assez fort "
+        if price == 4:
+            value += "fort "
+
+        value += "avec un rendement de : {}%".format(round((self._fetcher.get_dividend()/self._fetcher.get_price())*100, 2))
+        return value
+
     def payout_ratio_analyze(self):
         payout = self.payout_ratio
         value = "Taux de Distribution {}%".format(self._fetcher.get_payout_ratio())
@@ -225,6 +273,25 @@ class Analyzer(object):
             value += " trop élevé."
         if payout == 1:
             value += " correct."
+        return value
+
+    def price_analyze(self):
+        price = self.price
+        value = "Evolution du prix "
+        if price == 0:
+            value += " strictement décroissant: "
+        if price == 1:
+            value += " globalement décroissant: "
+        if price == 2:
+            value += " neutre: "
+        if price == 3:
+            value += " globalement croissant: "
+        if price == 4:
+            value += " strictement croissant: "
+
+        value += " ".join(
+            ["{}€".format(round(i, 2)) for i in self._fetcher.get_price_history() if i != 0]
+        )
         return value
 
     def roa_analyze(self):
@@ -257,21 +324,24 @@ class Analyzer(object):
         capit = self.capitalisation * self.WEIGHT.get("capit")
         revenues = self.revenues * self.WEIGHT.get("revenues")
         dividends = self.dividends * self.WEIGHT.get("dividends")
+        dividends_eff = self.dividends_efficiancy * self.WEIGHT.get("dividends")
         payout_ratio = self.payout_ratio * self.WEIGHT.get("payout_ratio")
 
         profitability = self.profitability * self.WEIGHT.get("profitability")
         leverage = self.leverage * self.WEIGHT.get("leverage")
         ebitda = self.ebitda * self.WEIGHT.get("ebitda")
+        resulat_net = self.resulat_net * self.WEIGHT.get("resultat_net")
 
         roa = self.roa * self.WEIGHT.get("roa")
         roe = self.roe * self.WEIGHT.get("roe")
 
         score = bna + per + bvps + capit + revenues + dividends + payout_ratio + profitability + leverage + ebitda
-        score += roa + roe + cash
+        score += roa + roe + cash + resulat_net + dividends_eff
         return score
 
     def show(self):
         msg = [
+            "Prix: {}€".format(self._fetcher.get_price()),
             self.bna_analyze(),
             self.bvps_analyze(),
             self.per_analyze(),
@@ -279,6 +349,8 @@ class Analyzer(object):
             self.revenues_analyze(),
             self.cashflow_analyze(),
             self.dividends_analyze(),
+            self.dividends_efficiancy_analyze(),
+            self.resultat_net_analyze(),
             self.leverage_analyze(),
             self.payout_ratio_analyze(),
             self.ebitda_analyze(),
@@ -331,6 +403,8 @@ class Analyzer(object):
     def _ebitda_history(self):
         ebitda = self._fetcher.get_dividend_history()
         value = 0
+        if len(ebitda) == 0:
+            return value
         if ebitda.iloc[-1] > ebitda.iloc[-2]:
             value = 1
         if all(ebitda.iloc[i] > ebitda.iloc[i - 1] for i in range(1, len(ebitda))):
@@ -366,19 +440,62 @@ class Analyzer(object):
         revenues = self._fetcher.get_revenue_history()
         dates = [pd.to_datetime(date) for date in revenues.keys()]
         value = 0
+        if len(revenues) == 0:
+            return value
         if revenues[dates[0]] > revenues[dates[1]]:
             value = 1
         if all(revenues[dates[i]] <= revenues[dates[i - 1]] for i in range(1, len(dates))):
             value = 2
         return value
 
+    def _net_income_history(self):
+        net_incomes = self._fetcher.get_net_income_history()
+
+        if len(net_incomes) == 0:
+            return 0
+
+        tendance_3 = net_incomes.diff(2).fillna(0).apply(np.sign).iloc[0]
+        tendance_5 = net_incomes.diff(4).fillna(0).apply(np.sign).iloc[0]
+
+        if tendance_3 == -1 and tendance_5 == -1:
+            value = 0
+        elif tendance_3 == -1 or tendance_5 == -1:
+            value = 1
+        elif tendance_3 == 0 or tendance_5 == 0:
+            value = 2
+        elif tendance_3 == 1 or tendance_5 == 1:
+            value = 3
+        else:
+            value = 4
+        return value
+
     def _dividends_history(self):
         dividends = self._fetcher.get_dividend_history()
         value = 0
+        if len(dividends) == 0:
+            return value
         if dividends.iloc[-1] > dividends.iloc[-2]:
             value = 1
         if all(dividends.iloc[i] > dividends.iloc[i - 1] for i in range(1, len(dividends))):
             value = 2
+        return value
+
+    def _dividend_efficiency(self):
+        dividend = self._fetcher.get_dividend()
+        price_shares = self._fetcher.get_price()
+        rendement = (dividend / price_shares) * 100
+
+        if rendement <= 0:
+            value = 0
+        elif 0 < rendement < 1:
+            value = 1
+        elif 1 < rendement < 2:
+            value = 2
+        elif 2 < rendement < 3:
+            value = 3
+        else:
+            value = 4
+
         return value
 
     def _bna_history(self):
@@ -395,6 +512,28 @@ class Analyzer(object):
         value = 0
         if payout < 70:
             value = 1
+        return value
+
+    def _price_evolution(self):
+        prices = self._fetcher.get_price_history()
+
+        if len(prices) == 0:
+            return 0
+
+        tendance_3 = prices.diff(2).fillna(0).apply(np.sign).iloc[0]
+        tendance_5 = prices.diff(4).fillna(0).apply(np.sign).iloc[0]
+
+        if tendance_3 == -1 and tendance_5 == -1:
+            value = 0
+        elif tendance_3 == -1 or tendance_5 == -1:
+            value = 1
+        elif tendance_3 == 0 or tendance_5 == 0:
+            value = 2
+        elif tendance_3 == 1 or tendance_5 == 1:
+            value = 3
+        else:
+            value = 4
+
         return value
 
     def _roa(self):
@@ -414,16 +553,21 @@ class Analyzer(object):
 
 
 if __name__ == "__main__":
-    # analyze = Analyzer("MSFT")
+    analyze = Analyzer("MSFT")
     # print("per  ", analyze.per)
     # print("bvps ", analyze.bvps)
+    # print("bvps ", analyze.bvps)
+    print("dividend ", analyze.dividends_efficiancy_analyze())
+    # print("price ", analyze.price_analyze())
+    # print("resultat net ", analyze.resultat_net_analyze())
     # print("capit", analyze.capitalisation)
     # print("chiffre affaire", analyze.revenues)
     # print("dividendes", analyze.dividends)
     # print("bna", analyze.bna)
-    # print("payout_ratio", analyze.payout_ratio)
+    # print("payout_ratio", analyze.payout_ratio, analyze.payout_ratio_analyze())
     # pprint(analyze.show())
-
+    # pprint(analyze.calculate_level())
+    quit()
     actions = [
         "AI.PA",
         "AIR.PA",
