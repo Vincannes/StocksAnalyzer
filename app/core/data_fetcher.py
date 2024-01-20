@@ -60,7 +60,8 @@ class DataFetcher(object):
 
     def get_book_value_share(self):
         """ (Actif-Passif) / Nbr Parts
-        :return:
+        prix reel de l entreprise
+        marge de sécurité 0.7 * BVPS
         """
         return self._financer.data.get(cst.BOOK_VALUE, 0)
 

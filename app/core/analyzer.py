@@ -155,6 +155,7 @@ class Analyzer(object):
         elif cash == 1:
             value += "positif: "
         value += "{:,.0f}M €".format(int(self._fetcher.get_cash_flow())/10**6)
+        value += " > 0$"
         return value
 
     def cashflow_history_analyze(self):
@@ -173,7 +174,7 @@ class Analyzer(object):
             value += "globalement en hausse: "
         elif cash == 4:
             value += "en hausse: "
-        value += " ".join(["{:,.0f}M €".format(i) for i in self._fetcher.get_cash_flow_history()])
+        value += " ".join(["{:,.0f}M €".format(int(i)/10**6) for i in self._fetcher.get_cash_flow_history()])
         return value
 
     def ebitda_analyze(self):
@@ -203,6 +204,7 @@ class Analyzer(object):
         elif ebitda == 1:
             value += " est bonne:"
         value += " {}%".format(round(self._fetcher.get_ebitda_marge(), 2))
+        value += " > 30%"
         return value
 
     def per_analyze(self):
@@ -218,6 +220,7 @@ class Analyzer(object):
             value += "normal."
         elif per == 2:
             value += "sur-coté."
+        value += " < 22"
         return value
 
     def capitalisation_analyze(self):
@@ -251,6 +254,7 @@ class Analyzer(object):
         if lev == 2:
             value += " parfaite: "
         value += "{}%".format(self._fetcher.get_leverage())
+        value += " < 1.5%"
         return value
 
     def profitability_analyze(self):
@@ -325,18 +329,19 @@ class Analyzer(object):
         """
         price = self.dividends_efficiancy
         value = "Rendement par dividende "
-        if price == 0:
+        if price == 4:
             value += "faible "
-        if price == 1:
+        if price == 3:
             value += "assez faible "
         if price == 2:
             value += "neutre "
-        if price == 3:
+        if price == 1:
             value += "assez fort "
-        if price == 4:
+        if price == 0:
             value += "fort "
 
         value += "avec un rendement de : {}%".format(round((self._fetcher.get_dividend()/self._fetcher.get_price())*100, 2))
+        value += " < 3%"
         return value
 
     def payout_ratio_analyze(self):
@@ -350,6 +355,7 @@ class Analyzer(object):
         if payout == 1:
             value += " correct."
         value += " {}%".format(self._fetcher.get_payout_ratio())
+        value += " < 70%"
         return value
 
     def price_analyze(self):
@@ -382,11 +388,12 @@ class Analyzer(object):
         roa = self.roa
         value = "ROA de"
         if roa == 0:
-            value += " mauvaise rentabilité: "
+            value += " mauvaise rentabilite: "
         if roa == 1:
-            value += " bonne rentabilité: "
+            value += " bonne rentabilite: "
 
         value += "{}%".format(round(self._fetcher.get_roa(), 2))
+        value += " > 10%"
         return value
 
     def roe_analyze(self):
@@ -395,13 +402,14 @@ class Analyzer(object):
         :return:
         """
         roe = self.roe
-        value = "ROE: "
+        value = "ROE a un"
         if roe == 0:
-            value += " résultat médiocre: "
+            value += " resultat mediocre: "
         if roe == 1:
-            value += " résultat acceptable: "
+            value += " resultat acceptable: "
 
         value += "{}%".format(round(self._fetcher.get_roe(), 2))
+        value += " > 10%"
         return value
 
     def calculate_level(self):
@@ -454,10 +462,6 @@ class Analyzer(object):
     # PRIVATES
 
     def _bvps(self):
-        """ prix reel de l entreprise
-           marge de sécurité 0.7 * BVPS
-        :return:
-        """
         bvps = self._fetcher.get_book_value_share() * 0.7
         if float(bvps) > float(self._fetcher.get_price()):
             value = 0
@@ -610,15 +614,15 @@ class Analyzer(object):
         rendement = (dividend / price_shares) * 100
 
         if rendement <= 0:
-            value = 0
+            value = 4
         elif 0 < rendement < 1:
-            value = 1
+            value = 3
         elif 1 < rendement < 2:
             value = 2
         elif 2 < rendement < 3:
-            value = 3
+            value = 1
         else:
-            value = 4
+            value = 0
 
         return value
 
@@ -677,7 +681,7 @@ class Analyzer(object):
 
 
 if __name__ == "__main__":
-    analyze = Analyzer("MSFT")
+    # analyze = Analyzer("MSFT")
     # print("per  ", analyze.per)
     # print("bvps ", analyze.bvps)
     # print("bvps ", analyze.bvps)
@@ -691,9 +695,9 @@ if __name__ == "__main__":
     # print("dividendes", analyze.dividends)
     # print("bna", analyze.bna)
     # print("payout_ratio", analyze.payout_ratio, analyze.payout_ratio_analyze())
-    pprint(analyze.show())
+    # pprint(analyze.show())
     # pprint(analyze.calculate_level())
-    quit()
+    # quit()
     actions = [
         "AI.PA",
         "AIR.PA",
@@ -708,4 +712,4 @@ if __name__ == "__main__":
         pprint(analyze.show())
         print(analyze.calculate_level())
         print("")
-        break
+        # break
