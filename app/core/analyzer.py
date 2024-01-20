@@ -9,6 +9,9 @@ import pandas as pd
 from app.core import constants as cst
 from app.core.data_fetcher import DataFetcher
 
+def format_scientific(value):
+    return '{:.2f}'.format(value)
+
 
 class Analyzer(object):
     fetcher = DataFetcher
@@ -49,6 +52,10 @@ class Analyzer(object):
     @property
     def cashflow(self):
         return self._cash_flow()
+
+    @property
+    def cashflow_history(self):
+        return self._cash_flow_history()
 
     @property
     def per(self):
@@ -124,8 +131,12 @@ class Analyzer(object):
         return value
 
     def bvps_analyze(self):
+        """Verifie si BVPS < 0.7 * cours actuel
+        Doit acheter a 0.7 * Cours actuel
+        :return:
+        """
         bvps = self.bvps
-        value = "BVPS, prix réel de {}€".format(self._fetcher.get_book_value_share())
+        value = "BVPS : prix réel de {}€".format(self._fetcher.get_book_value_share())
         if bvps == 0:
             value += " sur-évaluee "
         elif bvps == 1:
@@ -134,6 +145,9 @@ class Analyzer(object):
         return value
 
     def cashflow_analyze(self):
+        """Est-ce que CashFlow est positif
+        :return:
+        """
         cash = self._cash_flow
         value = "Tresorie: "
         if cash == 0:
@@ -143,7 +157,29 @@ class Analyzer(object):
         value += "{:,.0f}M €".format(int(self._fetcher.get_cash_flow())/10**6)
         return value
 
+    def cashflow_history_analyze(self):
+        """CashFlow est positif au cours des 5 dernieres annees.
+        :return:
+        """
+        cash = self._cash_flow_history()
+        value = "Tresorie "
+        if cash == 0:
+            value += "en baisse: "
+        elif cash == 1:
+            value += "globalement en baisse: "
+        elif cash == 2:
+            value += "sans croissance particulière: "
+        elif cash == 3:
+            value += "globalement en hausse: "
+        elif cash == 4:
+            value += "en hausse: "
+        value += " ".join(["{:,.0f}M €".format(i) for i in self._fetcher.get_cash_flow_history()])
+        return value
+
     def ebitda_analyze(self):
+        """Verifie si l EBITDA augmente au cours des 5 derniees annees.
+        :return:
+        """
         ebida = self.ebitda
         value = "EBITDA: Le Bénéfice Avant Intérêts, Impôts, Dépréciation et Amortissement "
         if ebida == 0:
@@ -152,18 +188,28 @@ class Analyzer(object):
             value += " crois depuis l'année précédente."
         elif ebida == 2:
             value += " en constante croissance."
+        value += " ".join(["{:,.0f}M".format(int(i)/10**6) for i in self._fetcher.get_ebitda_history() if i])
         return value
 
     def ebitda_marge_analyze(self):
+        """ Verifie si l EBITDA est > 30%.
+        A une activite plus rentable.
+        :return:
+        """
         ebitda = self._ebitda_marge()
         value = "EBITDA marge par rapport au Chiffre d'affaire"
         if ebitda == 0:
             value += " n'est pas bon."
         elif ebitda == 1:
             value += " est bonne."
+        value += "{}%".format(round(self._fetcher.get_ebitda_marge(), 2))
         return value
 
     def per_analyze(self):
+        """ 10 < PER < 22
+        Le prix est trop eleve, surevalue
+        :return:
+        """
         per = self.per
         value = "PER {} ".format(self._fetcher.get_per())
         if per == 0:
@@ -175,6 +221,10 @@ class Analyzer(object):
         return value
 
     def capitalisation_analyze(self):
+        """ Verifie si superieur a 10 millions $ ou superieur a 100 millions $
+        ou superieur a 1 milliard $
+        :return:
+        """
         capt = self.capitalisation
         value = "La capitalisation boursière est "
         if capt == 0:
@@ -189,6 +239,9 @@ class Analyzer(object):
         return value
 
     def leverage_analyze(self):
+        """% de dette doit etre le plus bas < 1.5
+        :return:
+        """
         lev = self.leverage
         value = "Dette"
         if lev == 0:
@@ -201,15 +254,23 @@ class Analyzer(object):
         return value
 
     def profitability_analyze(self):
+        """Quel attractif une action specifique est par rapport à d autres actions.
+        Rentabilité < 7
+        :return:
+        """
         prof = self.profitability
-        value = "Rentabilite {}".format(self._fetcher.get_profitability())
+        value = "Rentabilite"
         if prof == 0:
             value += " pas rentable"
         if prof == 1:
             value += " rentable"
+        value += " {}%".format(self._fetcher.get_profitability())
         return value
 
     def resultat_net_analyze(self):
+        """Verifie si le resultat net augmente au cours des 5 dernieres annees.
+        :return:
+        """
         net_income = self.resulat_net
         value = "Resulat net {}".format(self._fetcher.get_profitability())
         if net_income == 0:
@@ -226,6 +287,9 @@ class Analyzer(object):
         return value
 
     def revenues_analyze(self):
+        """Verifie si le chiffre d affaire augmente au cours des 5 dernieres annees.
+        :return:
+        """
         revenue = self.revenues
         value = "Chiffre d'affaire"
         if revenue == 0:
@@ -238,6 +302,9 @@ class Analyzer(object):
         return value
 
     def dividends_analyze(self):
+        """Verifie si les dividendes augmentent au cours des 5 dernieres annees.
+        :return:
+        """
         dividends = self.dividends
         value = "Les dividendes"
         if dividends == 0:
@@ -250,12 +317,16 @@ class Analyzer(object):
         return value
 
     def dividends_efficiancy_analyze(self):
+        """Verifie si le rendement par dividende n est pas trop eleve.
+        En %.
+        :return:
+        """
         price = self.dividends_efficiancy
         value = "Rendement par dividende "
         if price == 0:
             value += "faible "
         if price == 1:
-            value += "assez faible"
+            value += "assez faible "
         if price == 2:
             value += "neutre "
         if price == 3:
@@ -267,15 +338,22 @@ class Analyzer(object):
         return value
 
     def payout_ratio_analyze(self):
+        """Taux de Distribution. Si le reverse trop de dividendes > 70%.
+        :return:
+        """
         payout = self.payout_ratio
-        value = "Taux de Distribution {}%".format(self._fetcher.get_payout_ratio())
+        value = "Taux de Distribution"
         if payout == 0:
             value += " trop élevé."
         if payout == 1:
             value += " correct."
+        value += " {}%".format(self._fetcher.get_payout_ratio())
         return value
 
     def price_analyze(self):
+        """Verifie si au cours des 5 dernieres annees, le prix de l action augmente.
+        :return:
+        """
         price = self.price
         value = "Evolution du prix "
         if price == 0:
@@ -295,6 +373,10 @@ class Analyzer(object):
         return value
 
     def roa_analyze(self):
+        """Si le ROA est supérieur à 10%.
+        La société génère assez de bénéfice avec ses actifs.
+        :return:
+        """
         roa = self.roa
         value = "ROA de"
         if roa == 0:
@@ -306,6 +388,10 @@ class Analyzer(object):
         return value
 
     def roe_analyze(self):
+        """Si le ROE est supérieur à 10%.
+        La société génère assez de bénéfice avec ses actifs.
+        :return:
+        """
         roe = self.roe
         value = "ROE: "
         if roe == 0:
@@ -321,6 +407,7 @@ class Analyzer(object):
         per = self.per * self.WEIGHT.get("per")
         bvps = self.bvps * self.WEIGHT.get("bvps")
         cash = self.cashflow * self.WEIGHT.get("cashflow")
+        cash_hst = self.cashflow_history * self.WEIGHT.get("cashflow")
         capit = self.capitalisation * self.WEIGHT.get("capit")
         revenues = self.revenues * self.WEIGHT.get("revenues")
         dividends = self.dividends * self.WEIGHT.get("dividends")
@@ -336,7 +423,7 @@ class Analyzer(object):
         roe = self.roe * self.WEIGHT.get("roe")
 
         score = bna + per + bvps + capit + revenues + dividends + payout_ratio + profitability + leverage + ebitda
-        score += roa + roe + cash + resulat_net + dividends_eff
+        score += roa + roe + cash + resulat_net + dividends_eff + cash_hst
         return score
 
     def show(self):
@@ -348,6 +435,7 @@ class Analyzer(object):
             self.capitalisation_analyze(),
             self.revenues_analyze(),
             self.cashflow_analyze(),
+            self.cashflow_history_analyze(),
             self.dividends_analyze(),
             self.dividends_efficiancy_analyze(),
             self.resultat_net_analyze(),
@@ -393,15 +481,49 @@ class Analyzer(object):
             value = 1
         return value
 
+    def _cash_flow_history(self):
+        casf_flow_hst = self._fetcher.get_cash_flow_history()
+
+        if len(casf_flow_hst) == 0:
+            return 0
+
+        series_data = []
+        last_year = None
+        for year, group in casf_flow_hst.groupby(casf_flow_hst.index.year):
+            for i in group:
+                if last_year != year:
+                    last_year = year
+                    series_data.append(i)
+
+        first_year_index = next((index for index, value in enumerate(series_data) if value != 0.0), None)
+        last_year_index = next(
+            (len(series_data) - index - 1 for index, value in enumerate(series_data[::-1]) if value != 0.0), None
+        )
+
+        fully_increase = all(i < j for i, j in zip(series_data[first_year_index:last_year_index], series_data[2:]))
+        fully_decrease = all(i > j for i, j in zip(series_data[first_year_index:last_year_index], series_data[2:]))
+        if fully_decrease:
+            value = 0
+        elif fully_increase:
+            value = 4
+        elif series_data[first_year_index] > series_data[last_year_index]:
+            value = 1
+        elif series_data[first_year_index] < series_data[last_year_index]:
+            value = 3
+        else:
+            value = 2
+
+        return value
+
     def _ebitda_marge(self):
         ebitda = self._fetcher.get_ebitda_marge()
         value = 0
-        if ebitda < 30:
+        if ebitda > 30:
             value = 1
         return value
 
     def _ebitda_history(self):
-        ebitda = self._fetcher.get_dividend_history()
+        ebitda = self._fetcher.get_ebitda_history()
         value = 0
         if len(ebitda) == 0:
             return value
@@ -557,7 +679,9 @@ if __name__ == "__main__":
     # print("per  ", analyze.per)
     # print("bvps ", analyze.bvps)
     # print("bvps ", analyze.bvps)
-    print("dividend ", analyze.dividends_efficiancy_analyze())
+    # print("dividend ", analyze.dividends_efficiancy_analyze())
+    # print("cashflow_history ", analyze._net_income_history())
+    # print("cashflow_history ", analyze.cashflow_history_analyze())
     # print("price ", analyze.price_analyze())
     # print("resultat net ", analyze.resultat_net_analyze())
     # print("capit", analyze.capitalisation)
@@ -565,7 +689,7 @@ if __name__ == "__main__":
     # print("dividendes", analyze.dividends)
     # print("bna", analyze.bna)
     # print("payout_ratio", analyze.payout_ratio, analyze.payout_ratio_analyze())
-    # pprint(analyze.show())
+    pprint(analyze.show())
     # pprint(analyze.calculate_level())
     quit()
     actions = [

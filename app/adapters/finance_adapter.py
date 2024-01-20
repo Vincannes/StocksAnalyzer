@@ -3,6 +3,7 @@
 # copyright	:Vincannes
 import datetime
 import yfinance as yf
+from pprint import pprint
 
 from app.core import constants as cst
 from app.core.utils import DataToDict
@@ -34,21 +35,26 @@ class FinanceAdapters(object):
     def _load_datas(self):
         for key, val in self._stock.info.items():
             self._data[key] = val
-        self._data[cst.ASSETS] = self._balance_sheet().get(cst.ASSETS)[0]
+        self._data[cst.ASSETS] = DataToDict(self._stock.balance_sheet).get(cst.ASSETS)[0]
         self._histories = DataToDict(self._stock.get_financials())
         self._histories.append(self._get_price_hst())
+        self._histories.append(self._balance_sheet())
+        self._histories.append(self._cashflow())
 
     def _balance_sheet(self):
-        return DataToDict(self._stock.balance_sheet)
+        return self._stock.balance_sheet
 
     def _financials(self):
-        return DataToDict(self._stock.get_financials())
+        return self._stock.get_financials()
 
     def _get_actions(self):
         return self._stock.actions
 
     def get_earnings(self):
         return self._stock.earnings
+
+    def _cashflow(self):
+        return self._stock.cashflow
 
     def _get_dividends(self):
         return self._stock.dividends

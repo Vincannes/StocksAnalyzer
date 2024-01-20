@@ -23,3 +23,6 @@ class DataToDict(object):
 
     def keys(self):
         return self._data
+
+    def len(self):
+        return len(self._data)

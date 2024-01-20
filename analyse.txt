@@ -61,7 +61,9 @@ Rentabilité action, verifier si l'entreprise est bien sous-coté par rapport à
 - dette / ebitda: combien d année l'entreprise est capable de remboursé sa dette à par rapport à son propre EBITDA
 
 ######### Francis Ca Mousse ###########
-            TODO
+
+- chiffre d'affaire en augmentation aussi ?
+
 - DONE Resulat net sur les 3 et 5 dernière années
     - 0 strictement décroissant
     - 1 globalement décroissant (1 année plus haussière)

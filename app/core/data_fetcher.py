@@ -43,7 +43,7 @@ class DataFetcher(object):
 
     def get_bpa(self):
         """Ratio Benefice par Action (EPS)
-        correspond au bénéfice dégagé par une société divisé par le nombre de titres formant le capital.
+        Correspond au benefice degage par une societe divise par le nombre de titres formant le capital.
         :return:
         """
         return self._financer.data.get(cst.BPA, 0)
@@ -53,7 +53,7 @@ class DataFetcher(object):
 
     def get_book_value(self):
         """ Valeur comptable, capitaux propres d'une entreprise .
-        Elle correspond à la différence entre l'actif et le passif.
+        Elle correspond à la difference entre l actif et le passif.
         :return:
         """
         return self._financer.data.get(cst.BOOK_VALUE, 0) * self.get_shares()
@@ -66,25 +66,42 @@ class DataFetcher(object):
 
     def get_cash_flow(self):
         """Free Cash Flow
-        cash disponible après investissements et dépenses
+        Cash disponible après investissements et dépenses
         :return:
         """
         return self._financer.data.get(cst.CASHFLOW, 0)
 
     def get_cash_flow_action(self):
         """Free Cash Flow Par action
-        cash disponible après investissements et dépenses par action
+        Cash disponible après investissements et dépenses par action
         :return:
         """
         return self._financer.data.get(cst.CASHFLOW_ACTION, 0)
 
+    def get_cash_flow_history(self):
+        """Free Cash Flow history
+        Cash disponible après investissements et dépenses
+        :return:
+        """
+        return self._financer.histories.get(cst.CASHFLOW_HST, [])
+
     def get_capitalisation(self):
+        """Get valuation, current price * total shares.
+        :return: int
+        """
         return self._financer.data.get(cst.CAPITALISATION, 0)
 
     def get_debt(self):
+        """
+        :return: int
+        """
         return self._financer.data.get(cst.DEBT, 0)
 
     def get_dividend(self):
+        """Les dividendes sont des paiements periodiques que les entreprises leur versent
+        actionnaires, représentant une partie des benefices distribues
+        :return: int
+        """
         return self._financer.data.get(cst.DIVIDENDE, 0)
 
     def get_dividend_history(self):
@@ -98,10 +115,10 @@ class DataFetcher(object):
 
     def get_per(self):
         """Price Earning Ratio
-         calculé par le cours divisé par le BNPA, permet de trier les entreprises en fonction de leur cherté.
-         Plus le PER est élevé, plus une action est chère en Bourse, plus il est faible, moins elle est chère.
+         Calcule par le cours divise par le BNPA, permet de trier les entreprises en fonction de leur cherte.
+         Plus le PER est eleve, plus une action est chere en Bourse, plus il est faible, moins elle est chere.
          Cherté d'une action
-        :return:
+        :return: int
         """
         price = self.get_price()
         bpa = self.get_bpa()
@@ -111,9 +128,9 @@ class DataFetcher(object):
 
     def get_payout_ratio(self):
         """Ratio distribution dividend par action
-        orrespond à la rémunération qui est offerte par le dividende versé par une entreprise. Le rendement se calcule
+        Correspond à la rémunération qui est offerte par le dividende verse par une entreprise. Le rendement se calcule
         en rapportant le dividende au cours de Bourse par ction. Plus le rendement est élevé, plus la rémunération est forte.
-        :return:
+        :return: %
         """
         dividend = self.get_dividend()
         bpa = self.get_bpa()
@@ -124,11 +141,15 @@ class DataFetcher(object):
     def get_ebitda(self):
         """EBITDA
         Benefice Avant Internists Imposts & Advertisements
-        :return:
+        :return: int
         """
         return self._financer.data.get(cst.EBITDA, 0)
 
     def get_ebitda_marge(self):
+        """EBITDA / Chiffre Affaire
+        Marge de l entreprise a generer des benefices
+        :return: %
+        """
         ebitda = self.get_ebitda()
         revenue = self.get_revenue()
         if any([i == 0 for i in [ebitda, revenue]]):
@@ -139,8 +160,8 @@ class DataFetcher(object):
         return self._financer.histories.get(cst.EBITDA_HST, [])
 
     def get_leverage(self):
-        """ Si pas de Dette => regarder la trésorie
-            EBITDA / DEBT
+        """Si pas de Dette => regarder la tresorie
+        EBITDA / DEBT
         :return:
         """
         ebitda = self.get_ebitda()
@@ -151,7 +172,7 @@ class DataFetcher(object):
 
     def get_ratio(self):
         """Coefficiant de liquidité
-        capacite d une entreprise à couvrir ses obligations
+        Capacite d une entreprise a couvrir ses obligations
         a court terme avec ses actifs a court terme
         :return:
         """
@@ -161,8 +182,11 @@ class DataFetcher(object):
         return self._financer.histories.get(cst.CLOSE_HST)
 
     def get_profitability(self):
-        """ Cours / (CashFlow / action)
-        :return:
+        """Compare le cours actuel d'une action avec son cash flow par action.
+        Il offre des indications sur la valorisation d'une entreprise
+        par rapport a sa capacite a generer des liquidites
+        Cours / (CashFlow / action)
+        :return: %
         """
         cash_flow = self.get_cash_flow()
         shares = self.get_shares()
@@ -179,7 +203,7 @@ class DataFetcher(object):
 
     def get_net_income_history(self):
         """ Resulat net
-        :return:
+        :return: int
         """
         return self._financer.histories.get(cst.NET_INCOME_HST, [])
 
@@ -198,6 +222,8 @@ class DataFetcher(object):
     def get_roa(self):
         """ Return On Asset
         Rapport resultat net / total actif
+        Mesure la rentabilite d'une entreprise en evaluant
+        sa capacite a generer des benefices a partir de ses actifs totaux.
         :return: %
         """
         return  self._financer.data.get(cst.ROA, 0) * 100
@@ -205,6 +231,11 @@ class DataFetcher(object):
     def get_roe(self):
         """ Return On Equity
         Rapport resultat net / capitaux propre
+        Mesure rentabilite financiere par rapport aux capitaux propres
+        investis dans l'entreprise. Utilise efficacement ses fonds
+        propres pour generer des benefices.
+        En presence de dette, mieux vaut utiliser
+        le ROA pour évaluer la performance d une entreprise.
         :return: %
         """
         return self._financer.data.get(cst.ROE, 0) * 100
@@ -233,9 +264,11 @@ if __name__ == '__main__':
     # print(stck._financer.info.get("returnOnEquity"))
     # print(stck._financer.info.get("revenuePerShare"))
     # print("")
-    # print(stck.get_price_history())
-    print(stck.get_book_value())
-    print(stck.get_book_value_share())
+    # print(stck.get_cash_flow())
+    # print(stck.get_cash_flow_history())
+    print(stck.get_revenue_history())
+    # print(stck.get_book_value())
+    # print(stck.get_book_value_share())
     quit()
     print("bpa", stck.get_bpa())
     print("per", stck.get_per())
