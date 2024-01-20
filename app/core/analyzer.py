@@ -168,7 +168,7 @@ class Analyzer(object):
         elif cash == 1:
             value += "globalement en baisse: "
         elif cash == 2:
-            value += "sans croissance particulière: "
+            value += "sans croissance particuliere: "
         elif cash == 3:
             value += "globalement en hausse: "
         elif cash == 4:
@@ -181,11 +181,11 @@ class Analyzer(object):
         :return:
         """
         ebida = self.ebitda
-        value = "EBITDA: Le Bénéfice Avant Intérêts, Impôts, Dépréciation et Amortissement "
+        value = "EBITDA: Le Benefice Avant Interets, Impots, Depreciation et Amortissement "
         if ebida == 0:
             value += " est en baisse."
         elif ebida == 1:
-            value += " crois depuis l'année précédente."
+            value += " crois depuis l annee precedente."
         elif ebida == 2:
             value += " en constante croissance."
         value += " ".join(["{:,.0f}M".format(int(i)/10**6) for i in self._fetcher.get_ebitda_history() if i])
@@ -197,12 +197,12 @@ class Analyzer(object):
         :return:
         """
         ebitda = self._ebitda_marge()
-        value = "EBITDA marge par rapport au Chiffre d'affaire"
+        value = "EBITDA marge par rapport au Chiffre d affaire"
         if ebitda == 0:
-            value += " n'est pas bon."
+            value += " n est pas bon:"
         elif ebitda == 1:
-            value += " est bonne."
-        value += "{}%".format(round(self._fetcher.get_ebitda_marge(), 2))
+            value += " est bonne:"
+        value += " {}%".format(round(self._fetcher.get_ebitda_marge(), 2))
         return value
 
     def per_analyze(self):
@@ -226,15 +226,15 @@ class Analyzer(object):
         :return:
         """
         capt = self.capitalisation
-        value = "La capitalisation boursière est "
+        value = "Capitalisation boursiere est "
         if capt == 0:
-            value += "est inférieur à 10 millions"
+            value += "est inferieur a 10 millions"
         elif capt == 1:
-            value += "est inférieur à 100 millions"
+            value += "est inferieur a 100 millions"
         elif capt == 2:
             value += "entre 100 millions et 1 milliard"
         elif capt == 3:
-            value += "superieur à 1 milliard"
+            value += "superieur a 1 milliard"
         value += ": {:,.0f}M €".format(int(self._fetcher.get_capitalisation())/10**6)
         return value
 
@@ -254,17 +254,19 @@ class Analyzer(object):
         return value
 
     def profitability_analyze(self):
-        """Quel attractif une action specifique est par rapport à d autres actions.
+        """Quel attractif une action specifique est par rapport a d autres actions.
+        Plus le C/CF est bas, plus l action est evaluee meilleur marche.
         Rentabilité < 7
         :return:
         """
         prof = self.profitability
         value = "Rentabilite"
         if prof == 0:
-            value += " pas rentable"
+            value += " pas rentable:"
         if prof == 1:
-            value += " rentable"
+            value += " rentable:"
         value += " {}%".format(self._fetcher.get_profitability())
+        value += " < 7%."
         return value
 
     def resultat_net_analyze(self):
