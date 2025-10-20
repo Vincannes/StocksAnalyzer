@@ -2,6 +2,7 @@
 # #support	:Trolard Vincent
 # copyright	:Vincannes
 import datetime
+import pandas as pd
 import yfinance as yf
 from pprint import pprint
 
@@ -35,7 +36,7 @@ class FinanceAdapters(object):
     def _load_datas(self):
         for key, val in self._stock.info.items():
             self._data[key] = val
-        self._data[cst.ASSETS] = DataToDict(self._stock.balance_sheet).get(cst.ASSETS)[0]
+        self._data[cst.ASSETS] = DataToDict(self._stock.balance_sheet).get(cst.ASSETS).iloc[0]
         self._histories = DataToDict(self._stock.get_financials())
         self._histories.append(self._get_price_hst())
         self._histories.append(self._balance_sheet())
@@ -69,8 +70,27 @@ class FinanceAdapters(object):
         end_date = datetime.datetime.now()
         start_date = end_date - datetime.timedelta(days=365 * 5)
 
-        price = yf.download(self._stock_name, interval="3mo", start=start_date, end=end_date)[cst.CLOSE_HST]
-        return price.resample('Y').mean()
+        data = yf.download(
+            self._stock_name,
+            interval="3mo",
+            start=start_date,
+            end=end_date,
+            auto_adjust=False
+        )
+
+        price = data[cst.CLOSE_HST]
+        price_resampled = price.resample('YE').mean()
+
+        if isinstance(price_resampled, pd.Series):
+            df = price_resampled.to_frame(name=cst.CLOSE_HST)
+        else:
+            df = price_resampled.rename(columns={cst.CLOSE_HST: cst.CLOSE_HST})
+        df.index = df.index.year
+        df = df.T
+        df.index = [cst.CLOSE_HST]
+        df.columns = price_resampled.index
+        df = df[df.columns[::-1]]
+        return df
 
     def _get_resultat_compte(self):
         """
@@ -94,9 +114,12 @@ class FinanceAdapters(object):
 
 if __name__ == '__main__':
     from pprint import pprint
-    stck = FinanceAdapters("MSFT")
+    # stck = FinanceAdapters("MSFT")
+    stck = FinanceAdapters("STLAP.PA")
     # pprint(stck.data)
-    pprint(stck.histories)
+    pprint(stck._get_cash_flow().tail(50))
+    # pprint(stck._balance_sheet().loc["Total Debt"])
+    # pprint(stck.histories.get("Total Debt"))
     # print(stck._get_price_hst())
     # pprint(stck._get_dividends())
     # print(stck.financials)

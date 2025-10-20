@@ -105,8 +105,31 @@ Valeur Intrasèque:
     - Multiples Valuation (meme secteur):
 
 
+########## Piotroski #########
 
-####################
+Le score F de Piotroski est un nombre compris entre 0 et 9 qui est utilisé pour évaluer la solidité de
+la situation financière de l'entreprise. Le score est utilisé par les investisseurs financiers afin de
+trouver les actions les plus valorisées (neuf étant les meilleures)
+
+1-Résultat net positif : 1 point si la société est rentable pour l’année en cours.
+2-Cash-flow opérationnel positif : 1 point si la société génère des liquidités pour l’année en cours.
+3-Variation positive du RoA (Return on Assets) : 1 point si la société améliore sa rentabilité
+  par rapport à l’année précédente.
+4-Qualité des résultats reporté : 1 point si le cash-flow opérationnel est supérieur au résultat net,
+ ce qui permet de s’assurer que le revenu net n’est pas influencé par des astuces comptables.
+5-Diminution de la dette à long terme : 1 point si l’effet de levier (l’endettement) diminue
+ par rapport à l’année précédente.
+6-Augmentation du current ratio : 1 point si la liquidité s’améliore par rapport à l’année précédente.
+ Le current ratio est une indication de la liquidité d’une entreprise et de capacité à satisfaire à
+ ses obligations de paiement à court terme.
+7-Actions en circulation en baisse : 1 point s’il n’y a pas de dilution d’actions et que
+ le nombre d’actions en circulation diminue (l’entreprise rachète des actions).
+8-Marge brute en hausse : 1 point si la société améliore sa rentabilité en augmentant sa marge brute.
+9-Variation de la rotation des actifs : 1 point si la société est en mesure de générer davantage
+de revenus à partir de ses actifs propres. Ce critère évalue l’efficacité à déployer des
+capitaux pour des actifs générant des revenus.
+
+########## BUFFET ##########
 
 site : https://www.idbourse.com/2023/05/analyse-fondamentale-dune-action-guide-pratique-pour-investir-en-bourse/
 

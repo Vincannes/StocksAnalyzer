@@ -79,6 +79,9 @@ class DataFetcher(object):
         """
         return self._financer.data.get(cst.CASHFLOW_ACTION, 0)
 
+    def get_cash_flow_operational(self):
+        return self._financer.histories.get(cst.CASHFLOW_OPERATIONEL_HST, [])
+
     def get_cash_flow_history(self):
         """Free Cash Flow history
         Cash disponible après investissements et dépenses
@@ -92,11 +95,26 @@ class DataFetcher(object):
         """
         return self._financer.data.get(cst.CAPITALISATION, 0)
 
+    def get_cost_revenue(self):
+        return self._financer.histories.get(cst.COST_REVENUE, [])
+
     def get_debt(self):
         """
         :return: int
         """
         return self._financer.data.get(cst.DEBT, 0)
+
+    def get_debt_history(self):
+        """
+        :return: int
+        """
+        return self._financer.histories.get(cst.DEBT_HST, [])
+
+    def get_debt_long_history(self):
+        """
+        :return: int
+        """
+        return self._financer.histories.get(cst.DEBT_LONG_TERM_HIST, pd.Series())
 
     def get_dividend(self):
         """Les dividendes sont des paiements periodiques que les entreprises leur versent
@@ -104,6 +122,15 @@ class DataFetcher(object):
         :return: int
         """
         return self._financer.data.get(cst.DIVIDENDE, 0)
+
+    def get_total_actif(self):
+        return self._financer.histories.get(cst.ASSETS, [])
+
+    def get_total_passif(self):
+        return self._financer.histories.get(cst.TOTAL_PASSIF_HIST, [])
+
+    def get_total_passif_short_term(self):
+        return self._financer.histories.get(cst.TOTAL_PASSIF_SHORT_TERM_HIST, [])
 
     def get_dividend_history(self):
         dividends = self._financer.dividends
@@ -227,7 +254,7 @@ class DataFetcher(object):
         sa capacite a generer des benefices a partir de ses actifs totaux.
         :return: %
         """
-        return  self._financer.data.get(cst.ROA, 0) * 100
+        return self._financer.data.get(cst.ROA, 0) * 100
 
     def get_roe(self):
         """ Return On Equity
@@ -247,12 +274,15 @@ class DataFetcher(object):
         """
         return self._financer.data.get(cst.SHARES, 0)
 
+    def get_shares_history(self):
+        return self._financer.histories.get(cst.SHARES_HST, [])
+
     # calcul
 
 
 if __name__ == '__main__':
-    # stck = DataFetcher("GLE.PA")
-    stck = DataFetcher("MSFT")
+    stck = DataFetcher("TTE.PA")
+    # stck = DataFetcher("MSFT")
     # pprint(stck._financer.data)
     # pprint(stck._financer.histories)
     # quit()
@@ -267,30 +297,36 @@ if __name__ == '__main__':
     # print("")
     # print(stck.get_cash_flow())
     # print(stck.get_cash_flow_history())
-    print(stck.get_revenue_history())
+    # print(stck.get_revenue_history())
+    # print(stck.get_shares())
+    # print("dette")
+    # print(stck.get_debt_history())
+    # print("actif")
+    # print(stck.get_total_actif())
+    # print("passif")
+    # print(stck.get_total_passif())
     # print(stck.get_book_value())
     # print(stck.get_book_value_share())
-    quit()
     print("bpa", stck.get_bpa())
-    print("per", stck.get_per())
+    # print("per", stck.get_per())
     # print("shares", stck.get_shares())
     # print("ebit", stck.get_ebitda())
     # pprint(stck.get_ebitda_history())
-    print("revenue", stck.get_revenue())
-    print("revenue share", stck.get_revenue_per_share())
-    print("cash flow", stck.get_cash_flow())
-    print("dividende", stck.get_dividend())
-    print("debt", stck.get_debt())
-    print("leverage", stck.get_leverage())
-    print("ratio", stck.get_ratio())
-    print("book value", stck.get_book_value())
-    print("book value share", stck.get_book_value_share())
-    print("capitalisation", stck.get_capitalisation())
-    print("payout", stck.get_payout_ratio())
-    print("resultat net", stck.get_net_income())
-    print("assets", stck.get_assets_total())
-    print("resultat net history ", stck.get_net_income_history())
-    print("price history ", stck.get_price_history())
+    # print("revenue", stck.get_revenue())
+    # print("revenue share", stck.get_revenue_per_share())
+    # print("cash flow", stck.get_cash_flow())
+    # print("dividende", stck.get_dividend())
+    # print("debt", stck.get_debt())
+    # print("leverage", stck.get_leverage())
+    # print("ratio", stck.get_ratio())
+    # print("book value", stck.get_book_value())
+    # print("book value share", stck.get_book_value_share())
+    # print("capitalisation", stck.get_capitalisation())
+    # print("payout", stck.get_payout_ratio())
+    # print("resultat net", stck.get_net_income())
+    # print("assets", stck.get_assets_total())
+    # print("resultat net history ", stck.get_net_income_history())
+    # print("price history ", stck.get_price_history())
     # print("revenue history", stck.get_revenue_history())
     # print("ROE", stck.get_bpa_history())
     # print("")

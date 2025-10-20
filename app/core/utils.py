@@ -5,15 +5,16 @@ import pandas as pd
 
 
 class DataToDict(object):
-
-    def __init__(self, data):
+    def __init__(self, data: pd.DataFrame):
+        if isinstance(data, pd.Series):
+            data = data.to_frame()
         self._data = data
 
     def __repr__(self):
         return self._data.to_string()
 
     def append(self, data):
-        result = self._data.append(data)
+        result = self._data._append(data)
         self._data = result.fillna(0)
 
     def get(self, key, default=None):
